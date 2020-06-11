@@ -4,10 +4,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mysql =require('mysql');
+var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var boardRouter = require('./routes/board_tb');
-
+var contentRouter = require('./routes/content');
+var loginRouter = require('./routes/login');
+var bbsRouter = require('./routes/bbs');
 var app = express();
 
 // view engine setup
@@ -21,9 +24,12 @@ app.use(cookieParser());
 app.use(express.static('public'));
 app.use(express.static('views'));
 
+app.use('/bbs',bbsRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/board', boardRouter);
+app.use('/content',contentRouter);
+app.use('/login',loginRouter);
 app.use('/cc', function(req, res, next) {
   res.send('cc');
 });

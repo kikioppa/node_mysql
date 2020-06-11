@@ -11,11 +11,11 @@ function createConnection() {
     return connection;
 }
 
-function executeSql(sql, callback) {
+function executeSql(sql,datas, callback) {
     var connection = createConnection()
     connection.connect();
-    connection.query(sql, function (error, results, fields) {
-        console.log(error, results, fields);
+    connection.query(sql,datas, function (error, results, fields) {
+        console.log(sql, '\n', error, results);
         if (callback) callback(error, results, fields)
     });
 
@@ -23,5 +23,5 @@ function executeSql(sql, callback) {
 }
 
 module.exports = {
-    'executeSql': executeSql
+    'executeSql': executeSql //???
 }

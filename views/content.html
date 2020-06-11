@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>content</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+
+
+<body>
+
+<div class="wrap" style="padding-top: 100px;">
+
+    <div class="writer" id="writer"></div>
+    <div class="reg_date" id="reg_date"></div>
+    <div class="subject" id="subject"></div>
+    <div class="main_content" id="main_content" style="color:#000000; width: 400px; height: 300px; background:#ffffff">
+
+    </div>
+
+    <button id="del_btn">삭제</button>
+
+</div>
+
+</body>
+<script>
+
+    function getUrlParams() {
+        let match,
+            pl = /\+/g,  // Regex for replacing addition symbol with a space
+            search = /([^&=]+)=?([^&]*)/g,
+            decode = function (s) {
+                return decodeURIComponent(s.replace(pl, " "));
+            },
+            query = window.location.search.substring(1);
+        console.log(query)
+        const urlParams = {};
+        while (match = search.exec(query))
+            urlParams[decode(match[1])] = decode(match[2]);
+        return urlParams;
+    }
+
+    function getContent(id) {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:3000/board/list/" + id,
+            dataType: "JSON",
+            error: function () {
+                alert("실패");
+            },
+            success: function (data) {
+                console.log('성공');
+                console.log(data);
+
+                console.log(data.content)
+                console.log(data.writer)
+                addContent(data);
+            }
+        })
+    }
+
+    function addContent(data) {
+
+        const content = document.getElementById("main_content");
+        const writer = document.getElementById("writer");
+        const reg_date = document.getElementById("reg_date");
+        const subject = document.getElementById("subject");
+        content.innerHTML = data.content
+        writer.innerHTML = "작성자 : " + data.member_name
+        reg_date.innerHTML = "작성일자 : " + data.reg_date
+        subject.innerHTML = "제목 : " + data.title
+    }
+
+
+
+
+
+    let btn =document.getElementById("del_btn");
+
+    btn.addEventListener("click",del);
+
+    function del(data) {
+        console.log('삭제 펑션쓰');
+        console.log(data+'파라미터');
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/bbs/delete",
+            dataType: "JSON",
+            data: {},
+            error: function () {
+                alert("실패");
+
+            },
+            success: function (data) {
+                console.log('성공');
+                console.log(data);
+
+
+            }
+
+        })
+    }
+
+
+
+
+    window.onload = function () {
+        const url_params = getUrlParams()
+        console.log(url_params)
+        getContent(url_params.id)
+    }
+
+
+</script>
+</html>

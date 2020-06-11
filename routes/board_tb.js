@@ -7,23 +7,36 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/list', function(req, res, next) {
-    db.executeSql('select * from bbs_tb join member_tb on bbs_tb.id = member_tb.id', function (error, results, fields) {
+    console.log('req.cookies', req.cookies);
+    const id = req.cookies.id;
+    let sql = 'select member_tb.id,tb_id,member_tb.member_name,title,bbs_tb.reg_date ' +
+        'from bbs_tb ' +
+        'join member_tb ' +
+        'on bbs_tb.id = member_tb.id'
+        +' where member_tb.id ' + ' = ' + id;
+    db.executeSql(sql, function (error, results, fields) {
         console.log(error, results, fields);
+        console.log(req.cookies.name + '냥');
+
+
         res.json(results);
     })
 });
 // /board/content/2
-router.get('/content/:id', function(req, res, next) {
+router.get('/list/:id', function(req, res, next) {
     const id = req.params.id
-    const sql = 'select * from bbs_tb where tb_id = ' + id
+    const sql = 'select tb_id,member_tb.member_name,title,bbs_tb.reg_date,content from bbs_tb join member_tb on bbs_tb.id = member_tb.id where tb_id = ' + id
 
+    console.log('아이디이'+ id)
     db.executeSql(sql, function (error, results, fields) {
         if (error) {
             console.error(error);
             res.status(400).send('쿼리에러');
             return;
         }
-        res.json(results);
+
+        console.log(results);
+        res.json(results[0]);
     });
 });
 
