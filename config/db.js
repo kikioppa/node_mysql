@@ -22,6 +22,19 @@ function executeSql(sql,datas, callback) {
     connection.end();
 }
 
+
+function executeSql2(sql,callback) {
+    var connection = createConnection()
+    connection.connect();
+    connection.query(sql,function (error, results, fields) {
+        console.log(sql, '\n', error, results);
+        if (callback) callback(error, results, fields)
+    });
+
+    connection.end();
+}
+
 module.exports = {
-    'executeSql': executeSql //???
+    'executeSql': executeSql, //??? 다른이름 가능?,
+    'executeSql2': executeSql2 //??? 다른이름 가능?
 }

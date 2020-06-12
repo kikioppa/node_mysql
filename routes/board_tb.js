@@ -14,6 +14,7 @@ router.get('/list', function(req, res, next) {
         'join member_tb ' +
         'on bbs_tb.id = member_tb.id'
         +' where member_tb.id ' + ' = ' + id;
+    //datas 넣기
     db.executeSql(sql, function (error, results, fields) {
         console.log(error, results, fields);
         console.log(req.cookies.name + '냥');
