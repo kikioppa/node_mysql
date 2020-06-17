@@ -32,6 +32,9 @@
     let tb_id = '';
 
 
+
+
+
     function getUrlParams() {
         let match,
             pl = /\+/g,  // Regex for replacing addition symbol with a space
@@ -45,8 +48,8 @@
 
         while (match = search.exec(query)) {
             urlParams[decode(match[1])] = decode(match[2]);
-            console.log(match +"매치");
-            console.log(urlParams+"파라미터");
+            console.log(match + "매치");
+            console.log(urlParams + "파라미터");
         }
         return urlParams;
     }
@@ -70,15 +73,28 @@
         })
     }
 
+
     function addContent(data) {
+        function getFormatDate(date){
+            let year = date.getFullYear();
+            let month = (1 + date.getMonth());
+            month = month >= 10 ? month : '0' + month;
+            let day = date.getDate();
+            day = day >= 10 ? day : '0' + day;
+            return  year + '' + month + '' + day;
+        }
+
         tb_id = data.tb_id; //얘는 왜 변수 타입 x? 전역에 명시라서?
         const content = document.getElementById("main_content");
         const writer = document.getElementById("writer");
         const reg_date = document.getElementById("reg_date");
         const subject = document.getElementById("subject");
+        let tk = data.reg_date;
+        let cvd = new Date(tk);
+        cvd = getFormatDate(cvd);
         content.innerHTML = data.content
         writer.innerHTML = "작성자 : " + data.member_name
-        reg_date.innerHTML = "작성일자 : " + data.reg_date
+        reg_date.innerHTML = "작성일자 : " + cvd
         subject.innerHTML = "제목 : " + data.title
 
     }
@@ -107,7 +123,8 @@
             success: function (data) {
                 console.log('성공');
                 console.log(data);
-
+                alert('삭제되었습니다.');
+                return window.location.href = 'http://localhost:3000/';
 
             }
 

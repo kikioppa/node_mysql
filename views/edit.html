@@ -6,38 +6,47 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
 <body>
-<form action="/bbs/edit/confirm" method="post">
-    <div class ="wrap" id ="wrap" name="wrap">
-        <label>title :</label><input type="text" id="title" name="title"><br>
-        <label>content :</label><input type="textarea" placeholder="쿠쿠쿠" id="content" name="content"
+    <div class="wrap" id="wrap" name="wrap" >
+    <label>title :</label><input class="title" type="text" id="title" name="title"><br>
+        <label>content :</label><input type="text" id="content" name="content"
                                        style="width: 200px; height: 150px; border-box : 1px;"><br>
     </div>
-    <input type="submit" value="수정하기">
-</form>
 
+    <button id ="edit_confirm">수정하기</button>
 </body>
+
 
 <script>
 
     let tb_id = '';
 
-    window.onload = function () {
+    let title = document.getElementById("title")
+    let content = document.getElementById("content")
+
+    const edit_confirm = document.getElementById("edit_confirm")
+
+    edit_confirm.addEventListener("click", data)
 
 
-    function appendBoardRow(tbodyy, data_row) {
-        const td_tb_id = document.createElement("td")
-        const td_name = document.createElement("td")
-        const td_title = document.createElement("td")
-        const td_reg_date = document.createElement("td")
-        // <td></td>
-        td_tb_id.innerHTML = data_row.tb_id
-        td_name.innerHTML = data_row.member_name
-        td_title.innerHTML = data_row.title
-        td_reg_date.innerHTML = data_row.reg_date
+     function data() {
+        $.ajax({
+                type: "POST",
+                url: "http://localhost:3000/bbs/edit",
+                data: {tb_id: tb_id, title: title.value , content: content.value},
+                dataType: "JSON",
+                error: function () {
+                    alert("실패");
+                },
+                success: function (data) {
+                    console.log('성공');
+                    console.log(data);
+                    alert('수정되었습니다.')
+                    return window.location.href = 'http://localhost:3000/';
+                }
+            }
+        )
+    }
 
-
-        const title = data_row.title
-        const content = data_row.content
 
     function getUrlParams() {
         let match,
@@ -76,55 +85,21 @@
 
     function addContent(data) {
         tb_id = data.tb_id; //얘는 왜 변수 타입 x? 전역에 명시라서?
-        const content = document.getElementById("main_content");
-        const writer = document.getElementById("writer");
-        const reg_date = document.getElementById("reg_date");
-        const subject = document.getElementById("subject");
-        content.innerHTML = data.content
-        writer.innerHTML = "작성자 : " + data.member_name
-        reg_date.innerHTML = "작성일자 : " + data.reg_date
-        subject.innerHTML = "제목 : " + data.title
 
+        title = document.getElementById("title");
+        content = document.getElementById("content");
+        title.value = data.title;
+        content.value = data.content;
     }
 
 
-    const tr = document.createElement("tr")
-    // <tr></tr>
-    tr.appendChild(td_tb_id)
-    tr.appendChild(td_name)
-    tr.appendChild(td_title)
-    tr.appendChild(td_reg_date)
-
-
-    /* function edit() {
-         console.log('수정 펑션쓰');
-
-         $.ajax({
-             type: "POST",
-             url: "http://localhost:3000/bbs/edit",
-             data: { tb_id: tb_id },
-             dataType: "JSON",
-             error: function () {
-                 alert("실패");
-             },
-             success: function (data) {
-                 console.log('성공');
-                 console.log(data);
-
-
-             }
-
-         })
-
-
-     }*/
-
+    window.onload = function () {
 
 
         const url_params = getUrlParams()
         console.log(url_params)
         getContent(url_params.id)
-    }
+
     }
 
 

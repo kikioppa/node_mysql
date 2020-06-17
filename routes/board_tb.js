@@ -13,9 +13,9 @@ router.get('/list', function(req, res, next) {
         'from bbs_tb ' +
         'join member_tb ' +
         'on bbs_tb.id = member_tb.id'
-        +' where member_tb.id ' + ' = ' + id;
+        +' where member_tb.id ' + ' = ' + id +' limit ?,?';
     //datas 넣기
-    db.executeSql(sql, function (error, results, fields) {
+    db.executeSql(sql, [10,10],function (error, results, fields) {
         console.log(error, results, fields);
         console.log(req.cookies.name + '냥');
 
@@ -40,5 +40,7 @@ router.get('/list/:id', function(req, res, next) {
         res.json(results[0]);
     });
 });
+
+
 
 module.exports = router;
