@@ -11,11 +11,11 @@ function createConnection() {
     return connection;
 }
 
-function executeSql(sql,datas, callback) {
+function executeSql(sql, data, callback) {
     var connection = createConnection()
     connection.connect();
-    connection.query(sql,datas, function (error, results, fields) {
-        console.log(sql, '\n', error, results);
+    connection.query(sql, data, function (error, results, fields) {
+        console.log(sql, '\n', data, '\n', error, results);
         if (callback) callback(error, results, fields)
     });
 
