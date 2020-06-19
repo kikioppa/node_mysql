@@ -2,44 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <title>게시판 목록</title>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
+<style type="text/css">
+    .paging a{
+        font-size: 1.500rem;
+    }
 
+    .paging a.on {
+        text-decoration: none;
+        color:  #FF0000;
+        font-weight: bold;
+    }
+
+</style>
 <script>
 
-    window.onload = function list() {
-
-        const td_tb_id = document.createElement("td");
-        const td_writer = document.createElement("td");
-        const td_title = document.createElement("td");
-        const td_reg_date = document.createElement("td");
-
-        td_tb_id.innerHTML = data_row.tb_id
-        td_name.innerHTML = data_row.member_name
-        td_title.innerHTML = data_row.title
-        td_reg_date.innerHTML = data_row.reg_date
+    window.onload = function () {
 
 
-        function createContent() {
-
-            const main_content = document.getElementById("main_content");
-            main_content.innerHTML = content
+        function getFormatDate(date){
+            console.log(date);
+            console.log(date.getMonth());
+            let year = date.getFullYear();
+            let month = (1 + date.getMonth());
+            month = month >= 10 ? month : '0' + month;
+            let day = date.getDate();
+            day = day >= 10 ? day : '0' + day;
+            return  year + '년' + month + '월' + day +'일';
         }
 
-        const tr = document.createElement("tr")
-        // <tr></tr>
-        tr.appendChild(td_tb_id)
-        tr.appendChild(td_name)
-        tr.appendChild(td_title)
-        tr.appendChild(td_reg_date)
+
+        function appendBoardRow(tbodyy, data_row) {
+            const td_tb_id = document.createElement("td")
+            const td_name = document.createElement("td")
+            const td_title = document.createElement("td")
+            const td_reg_date = document.createElement("td")
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            // <td></td>
+            let tk = data_row.reg_date;
+            let cvd = new Date(tk);
+            cvd = getFormatDate(cvd);
+            td_tb_id.innerHTML = data_row.tb_id
+            td_name.innerHTML = data_row.member_name
+            td_title.innerHTML = data_row.title
+            td_reg_date.innerHTML = cvd;
+
+            //data_row.reg_date.slice(0,16).split("T").join("/")
+
+            console.log("히얍"+tk.toLocaleString('ko-KR',options));
+
+            td_title.addEventListener('click', function () {
+                console.log(data_row);
+                location.href = 'http://localhost:3000/content.html?id=' + data_row.tb_id
+            })
+
+
+            const tr = document.createElement("tr")
+
+            tr.appendChild(td_tb_id)
+            tr.appendChild(td_name)
+            tr.appendChild(td_title)
+            tr.appendChild(td_reg_date)
+
+            tbodyy.appendChild(tr)
+
+
+        }
+
+        function createNumber(data){
+            paging = document.getElementById("paging")
+            const li = document.createElement("li")
+            let a = document.createElement("a")
+            a.href = '/list.html?page='+data.prev
+            a.innerHTML = "" +'prev';
+            li.appendChild(a)
+            paging.appendChild(li)
+            console.log(data)
+            console.log("미야옹")
+            for(let i = 1; i<= data.total_page; i++){
+
+                paging = document.getElementById("paging")
+                const li = document.createElement("li")
+                let a = document.createElement("a")
+                a.href = '/list.html?page='+i
+                a.innerHTML = "" +i ;
+                li.appendChild(a)
+
+                paging.appendChild(li)
+            }
+
+            paging_d = document.getElementById("paging")
+            const li_d = document.createElement("li")
+            let a_d = document.createElement("a")
+            a_d.href = '/list.html?page='+data.next
+            a_d.innerHTML = "" +'next';
+            li_d.appendChild(a_d)
+            paging_d.appendChild(li_d)
+
+        }
 
 
         function createList(data) {
             const tbodyy = document.getElementById("tbodyy")
-            // for(변수초기화; 조건문; 구문 실행 후 실행 보통 증감) {
-            //
-            // }
+            data.length //토탈 데이타
+            /*function paging(totalData, dataPerPage, pageCount, currentPage){
+            let totalPage = Math.ceil(totalData/dataPerPage);
+            let pageGroup = Math.ceil(currentPage/pageCount);
+
+            let last = pageGroup * pageCount;
+            if(last > totalPage)
+                last = totalPage;
+            let first = last - (pageCount-1);
+            let next = last+1;
+            let prev = first-1;
+            }*/
+
             for (let i = 0; i < data.length; i++) {
                 const data_row = data[i]
                 console.log('인' + i, data_row)
@@ -47,36 +127,69 @@
             }
 
 
-
-
-
-            function btng() {
-                console.log('냥 불러옴');
-                $.ajax({
-                    type: "GET",
-                    url: "http://localhost:3000/board/list",
-                    dataType: "JSON",
-                    error: function () {
-                        alert("실패");
-                    },
-                    success: function (data) {
-                        console.log('성공');
-                        console.log(data);
-
-                        removeList(data);
-
-                        createList(data);
-
-
-                    }
-
-                })
-            }
-
-
-
         }
+
+
+
+        const write_btn = document.getElementById("write_btn");
+
+        write_btn.addEventListener("click",function () {
+            console.log("글쓰기 페이지 이동");
+            location.href = 'http://localhost:3000/bbs'
+        })
+
+
+        function getUrlParams() {
+            let match,
+                pl = /\+/g,  // Regex for replacing addition symbol with a space
+                search = /([^&=]+)=?([^&]*)/g,
+                decode = function (s) {
+                    return decodeURIComponent(s.replace(pl, " "));
+                },
+                query = window.location.search.substring(1);
+            console.log(query)
+            const urlParams = {};
+
+            while (match = search.exec(query)) {
+                urlParams[decode(match[1])] = decode(match[2]);
+                console.log(match + "매치");
+                console.log(urlParams + "파라미터");
+            }
+            return urlParams;
+        }
+
+        const url_params = getUrlParams()
+        console.log(url_params)
+        dataPerPage(url_params.page)
+
+
+
+
+        function dataPerPage(page) {
+            console.log('냥 불러옴');
+            $.ajax({
+                type: "GET",
+                url: "http://localhost:3000/board/list?page="+page,
+                dataType: "JSON",
+                data: {page: page},
+                error: function () {
+                    alert("실패");
+                },
+                success: function (data) {
+                    console.log('성공');
+                    console.log(data);
+                    createList(data.board_list);
+                    createNumber(data);
+                    console.log(data.total_page)
+
+                }
+
+            })
+        }
+
+
     }
+
 
 
 </script>
@@ -90,21 +203,26 @@
                 <th title="게시물 번호"> 번호</th>
                 <th title="게시물 제목"> 글쓴이</th>
                 <th title="게시물 제목"> 제목</th>
-                <th title="게시물 컨텐츠"> 게시글</th>
+                <th title="게시물 게시일"> 게시일</th>
 
             </tr>
         </thread>
 
-        <tbody id="tbody">
+        <tbody id="tbodyy">
 
 
         </tbody>
 
+
     </table>
 
-</div>
 
+    <ul class="pagination pagination-lg" id="paging">
 
+    </ul>
+
+    <button id="write_btn">글쓰기</button>
 </div>
+<div class ="paging"></div>
 </body>
 </html>

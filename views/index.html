@@ -13,7 +13,7 @@
 
     .paging a.on {
         text-decoration: none;
-        color:  #FF0000;
+        color: #ff0000;
         font-weight: bold;
     }
 
@@ -21,27 +21,6 @@
 <script>
 
     window.onload = function () {
-
-
-
-        function  pagingNum() {
-
-            paging = document.getElementById("paging")
-            const li = document.createElement("li")
-            let a = document.createElement("a")
-            a.href = 'page=2'
-            a.innerHTML = '' + 1
-            li.appendChild(a)
-
-
-            paging.appendChild(li)
-
-
-
-        }
-
-
-
 
         function getFormatDate(date){
             console.log(date);
@@ -93,8 +72,19 @@
         }
 
         function createNumber(data){
-            for(let i = 0; i< data.total_page; i++)
-                pagingNum()
+
+            for(let i = 1; i<= data.total_page; i++){
+
+                paging = document.getElementById("paging")
+                const li = document.createElement("li")
+                let a = document.createElement("a")
+                a.href = '/list.html?page='+i
+                a.innerHTML = "" +i ;
+                li.appendChild(a)
+
+                paging.appendChild(li)
+
+            }
         }
 
 
@@ -122,6 +112,8 @@
 
         }
 
+
+
         const write_btn = document.getElementById("write_btn");
 
         write_btn.addEventListener("click",function () {
@@ -129,7 +121,7 @@
             location.href = 'http://localhost:3000/bbs'
         })
 
-        function btng(page) {
+        function btng() {
             console.log('냥 불러옴');
             $.ajax({
                 type: "GET",
@@ -138,10 +130,9 @@
                 error: function () {
                     alert("실패");
                 },
-                success: function (data,board_list,page) {
+                success: function (data) {
                     console.log('성공');
                     console.log(data);
-                    console.log(board_list);
                     createList(data.board_list);
                     createNumber(data);
                     console.log(data.total_page)

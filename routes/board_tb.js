@@ -26,7 +26,7 @@ router.get('/list', function (req, res, next) {
     let count_sql = 'select count(*) as cnt ' +
         query_body;
 
-    const list_count = 2;
+    const list_count = 1;
 
     let limit_start = (page - 1) * list_count;
 
@@ -36,11 +36,14 @@ router.get('/list', function (req, res, next) {
         total_count: 0,
         board_list: [],
         page: page,
-        total_page :0/*,
-        last: page * total_count,
-        next : last+1,
+        total_page :0,
+        last: 0,
+        prev : page-10,
+        next : page+10,
+        pageGroup : 0
+        /*next : last+1,
         prev : first-1,
-        first :last -(total_count-1)*/
+        first :last -(total_count-1)*!/*/
     }
     //datas 넣기
 
@@ -56,6 +59,8 @@ router.get('/list', function (req, res, next) {
         } else {
             query_result.total_count =  count_results[0]["cnt"];
             query_result.total_page =   Math.ceil(count_results[0]["cnt"]/list_count);
+            query_result.last =   page * count_results[0]["cnt"];
+            query_result.pageGroup = Math.ceil(page/count_results[0]["cnt"]/list_count);
             db.executeSql(list_sql, data, function (error, results, fields) {
                 // console.log(error, results, fields);
                 console.log(req.cookies.name + '냥');
@@ -70,6 +75,25 @@ router.get('/list', function (req, res, next) {
             })
         }
     })
+});
+
+
+// /board/content/2
+router.get('/list?id', function (req, res, next) {
+    const id = req.params.id
+    const sql = 'select tb_id,member_tb.member_name,title,bbs_tb.reg_date,content from bbs_tb join member_tb on bbs_tb.id = member_tb.id where tb_id = ' + id
+
+    console.log('아이디이' + id)
+    db.executeSql(sql, function (error, results, fields) {
+        if (error) {
+            console.error(error);
+            res.status(400).send('쿼리에러');
+            return;
+        }
+
+        console.log(results);
+        res.json(results[0]);
+    });
 });
 
 
@@ -90,6 +114,9 @@ router.get('/list/:id', function (req, res, next) {
         res.json(results[0]);
     });
 });
+
+
+
 
 
 module.exports = router;

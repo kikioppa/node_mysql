@@ -18,44 +18,45 @@
 
 <script>
 
+    window.onload = function () {
 
-    let title = document.getElementById("title")
-    let content = document.getElementById("content")
+        let title = document.getElementById("title")
+        let content = document.getElementById("content")
 
-    let a = title.value
-    const cl = document.getElementById("btn")
+        let a = title.value
+        const cl = document.getElementById("btn")
 
-    cl.addEventListener("click", data)
+        cl.addEventListener("click", newnew)
 
 
-  /* function data() {
-        $.ajax({
-                type: "POST",
-                url: "http://localhost:3000/bbs/new",
-                data: {tb_id: tb_id, title: a, content: content.value},
-                dataType: "JSON",
-                error: function () {
-                    alert("실패");
-                },
-                success: function (data) {
-                    console.log('성공');
-                    console.log(data);
-                    return history.back();
+        function newnew() {
+            $.ajax({
+                    type: "POST",
+                    url: "http://localhost:3000/bbs/new",
+                    data: {tb_id: tb_id, title: a, content: content.value},
+                    dataType: "JSON",
+                    error: function () {
+                        alert("실패");
+                    },
+                    success: function (data) {
+                        console.log('성공');
+                        console.log(data);
+                        return window.location.href = 'http://localhost:3000/';
+                    }
                 }
-            }
-        )
-    }*/
+            )
+        }
+    }
 
 
-/*
-    function send() {
-        xmlHttp = createXmlHttpRequest();
+    /*  function send() {
+          xmlHttp = createXmlHttpRequest();
 
-        let title = document.getElementById("title").value;
-        let content = document.getElementById("content").value;
+          let title = document.getElementById("title").value;
+          let content = document.getElementById("content").value;
 
 
-    }*/
+      }*/
 
 </script>
 
